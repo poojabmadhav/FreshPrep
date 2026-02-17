@@ -1,0 +1,2694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2d5f3f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fresh Prep">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkZyZXNoIFByZXAgLSBWZWdldGFyaWFuIE1lYWwgUGxhbm5lciIsCiAgInNob3J0X25hbWUiOiAiRnJlc2ggUHJlcCIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjhmYWY2IiwKICAidGhlbWVfY29sb3IiOiAiIzJkNWYzZiIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCclM0UlM0NyZWN0IGZpbGw9JyUyMzJkNWYzZicgd2lkdGg9JzEwMCcgaGVpZ2h0PScxMDAnLyUzRSUzQ3RleHQgeD0nNTAnIHk9JzY1JyBmb250LXNpemU9JzUwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyUzRSVGMCU5RiU4QyVCRiUzQy90ZXh0JTNFJTNDL3N2ZyUzRSIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJyUzRSUzQ3JlY3QgZmlsbD0nJTIzMmQ1ZjNmJyB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcvJTNFJTNDdGV4dCB4PSc1MCcgeT0nNjUnIGZvbnQtc2l6ZT0nNTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnJTNFJUYwJTlGJThDJUJGJTNDL3RleHQlM0UlM0Mvc3ZnJTNFIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
+    <title>Fresh Prep - Vegetarian Meal Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --forest-dark: #2d5f3f;
+            --forest-medium: #3a7a52;
+            --forest-light: #4d9b6b;
+            --sage: #8ba888;
+            --mint: #c8e6c9;
+            --cream: #f8faf6;
+            --white: #ffffff;
+            --charcoal: #2c2c2c;
+            --warm-gray: #6b6b6b;
+            --tomato: #e74c3c;
+            --golden: #f39c12;
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --shadow-sm: 0 2px 8px rgba(45, 95, 63, 0.08);
+            --shadow-md: 0 4px 16px rgba(45, 95, 63, 0.12);
+            --shadow-lg: 0 8px 32px rgba(45, 95, 63, 0.16);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, #f8faf6 0%, #e8f5e9 100%);
+            color: var(--charcoal);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -20%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(200, 230, 201, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: -10%;
+            width: 40%;
+            height: 40%;
+            background: radial-gradient(circle, rgba(77, 155, 107, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--forest-dark);
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--warm-gray);
+            font-weight: 400;
+            margin-bottom: 32px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        .tab-btn {
+            padding: 12px 28px;
+            background: var(--white);
+            border: 2px solid var(--mint);
+            border-radius: var(--radius-lg);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--forest-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab-btn:hover {
+            border-color: var(--forest-medium);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tab-btn.active {
+            background: var(--forest-dark);
+            color: var(--white);
+            border-color: var(--forest-dark);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .recipe-card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .recipe-select-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 3;
+            background: var(--white);
+            border: 2px solid var(--mint);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            color: transparent;
+        }
+
+        .recipe-select-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--forest-medium);
+        }
+
+        .recipe-select-btn.selected {
+            background: var(--forest-dark);
+            border-color: var(--forest-dark);
+            color: var(--white);
+        }
+
+        .recipe-select-btn.selected::before {
+            content: '✓';
+        }
+
+        .recipe-card-clickable {
+            cursor: pointer;
+        }
+
+        .recipe-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--sage) 0%, var(--mint) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recipe-image::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translate(-25%, -25%); }
+            50% { transform: translate(25%, 25%); }
+        }
+
+        .recipe-content {
+            padding: 20px;
+        }
+
+        .recipe-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--forest-dark);
+            margin-bottom: 8px;
+        }
+
+        .recipe-origin {
+            font-size: 0.9rem;
+            color: var(--warm-gray);
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        .nutrition-tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nutrition-tag {
+            padding: 6px 12px;
+            background: var(--mint);
+            color: var(--forest-dark);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .nutrition-tag.protein { background: #ffd9a8; color: var(--golden); }
+        .nutrition-tag.fiber { background: #d4edda; color: var(--forest-medium); }
+
+        .serving-size {
+            font-size: 0.9rem;
+            color: var(--warm-gray);
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--mint);
+        }
+
+        .planner-header {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .planner-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-medium) 100%);
+            color: var(--white);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .selected-meals {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+
+        .meal-slot {
+            padding: 16px;
+            background: var(--cream);
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .meal-slot:hover {
+            background: var(--mint);
+        }
+
+        .meal-name {
+            font-weight: 600;
+            color: var(--forest-dark);
+        }
+
+        .remove-btn {
+            background: var(--tomato);
+            color: var(--white);
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .shopping-section {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+
+        .shopping-category {
+            margin-bottom: 24px;
+        }
+
+        .category-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--forest-dark);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--mint);
+        }
+
+        .ingredient-list {
+            list-style: none;
+        }
+
+        .ingredient-item {
+            padding: 12px;
+            background: var(--cream);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ingredient-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--forest-dark);
+        }
+
+        .ingredient-item.checked {
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+
+        .logger-section {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .daily-goals {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .goal-card {
+            background: linear-gradient(135deg, var(--mint) 0%, var(--sage) 100%);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .goal-progress {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--forest-dark);
+            margin-bottom: 4px;
+        }
+
+        .goal-target {
+            font-size: 0.9rem;
+            color: var(--warm-gray);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--cream);
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--forest-dark);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .log-entry-form {
+            background: var(--cream);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--forest-dark);
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--mint);
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            background: var(--white);
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--forest-medium);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px 28px;
+            background: var(--forest-dark);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            background: var(--forest-medium);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .logged-meals {
+            margin-top: 24px;
+        }
+
+        .logged-meal {
+            padding: 16px;
+            background: var(--cream);
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .meal-info {
+            flex: 1;
+        }
+
+        .meal-time {
+            font-size: 0.85rem;
+            color: var(--warm-gray);
+            margin-bottom: 4px;
+        }
+
+        .meal-details {
+            font-weight: 600;
+            color: var(--forest-dark);
+        }
+
+        .date-selector {
+            background: var(--white);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .date-selector label {
+            margin: 0;
+            font-weight: 600;
+            color: var(--forest-dark);
+        }
+
+        input[type="date"] {
+            padding: 10px 14px;
+            border: 2px solid var(--mint);
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            background: var(--white);
+            color: var(--forest-dark);
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: var(--forest-medium);
+        }
+
+        .share-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            padding: 12px 24px;
+            background: var(--white);
+            color: var(--forest-dark);
+            border: 2px solid var(--forest-dark);
+            border-radius: var(--radius-md);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--forest-dark);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .share-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .share-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.8rem;
+            color: var(--forest-dark);
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 12px 24px;
+            background: var(--cream);
+            color: var(--charcoal);
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: var(--mint);
+        }
+
+        .btn-confirm {
+            flex: 1;
+            padding: 12px 24px;
+            background: var(--forest-dark);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-confirm:hover {
+            background: var(--forest-medium);
+        }
+
+        .log-type-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: var(--cream);
+            padding: 4px;
+            border-radius: var(--radius-md);
+        }
+
+        .log-type-tab {
+            flex: 1;
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--warm-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .log-type-tab.active {
+            background: var(--white);
+            color: var(--forest-dark);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ingredient-search {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--mint);
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            background: var(--white);
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--forest-medium);
+        }
+
+        .ingredient-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border: 2px solid var(--mint);
+            border-radius: var(--radius-sm);
+            margin-top: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            z-index: 10;
+        }
+
+        .ingredient-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--cream);
+            transition: background 0.2s ease;
+        }
+
+        .ingredient-option:last-child {
+            border-bottom: none;
+        }
+
+        .ingredient-option:hover {
+            background: var(--mint);
+        }
+
+        .ingredient-option-name {
+            font-weight: 600;
+            color: var(--forest-dark);
+            margin-bottom: 4px;
+        }
+
+        .ingredient-option-details {
+            font-size: 0.85rem;
+            color: var(--warm-gray);
+        }
+
+        .selected-ingredient-card {
+            background: var(--mint);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 16px;
+        }
+
+        .selected-ingredient-name {
+            font-weight: 700;
+            color: var(--forest-dark);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .selected-ingredient-nutrition {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: var(--charcoal);
+        }
+
+        .selected-ingredient-nutrition span {
+            background: var(--white);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .clear-selection-btn {
+            background: var(--tomato);
+            color: var(--white);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .clear-selection-btn:hover {
+            background: #c0392b;
+        }
+
+        .create-recipe-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            background: var(--forest-dark);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .create-recipe-btn:hover {
+            background: var(--forest-medium);
+            transform: scale(1.1);
+        }
+
+        .create-recipe-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .create-recipe-modal.show {
+            display: flex;
+        }
+
+        .create-recipe-content {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .recipe-builder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .recipe-builder-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            color: var(--forest-dark);
+        }
+
+        .emoji-picker {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .emoji-option {
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .emoji-option:hover {
+            background: var(--mint);
+        }
+
+        .emoji-option.selected {
+            border-color: var(--forest-dark);
+            background: var(--mint);
+        }
+
+        .ingredient-builder-list {
+            margin-top: 16px;
+            margin-bottom: 16px;
+        }
+
+        .builder-ingredient-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--cream);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+        }
+
+        .builder-ingredient-info {
+            flex: 1;
+        }
+
+        .builder-ingredient-name {
+            font-weight: 600;
+            color: var(--forest-dark);
+        }
+
+        .builder-ingredient-amount {
+            font-size: 0.85rem;
+            color: var(--warm-gray);
+        }
+
+        .nutrition-preview {
+            background: var(--mint);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-top: 20px;
+        }
+
+        .nutrition-preview-title {
+            font-weight: 700;
+            color: var(--forest-dark);
+            margin-bottom: 12px;
+        }
+
+        .nutrition-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+        }
+
+        .nutrition-preview-item {
+            text-align: center;
+        }
+
+        .nutrition-preview-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--forest-dark);
+        }
+
+        .nutrition-preview-label {
+            font-size: 0.8rem;
+            color: var(--warm-gray);
+        }
+
+        .recipe-builder-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .small-input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid var(--mint);
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .add-ingredient-section {
+            background: var(--cream);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+        }
+
+        .add-ingredient-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .custom-recipe-badge {
+            display: inline-block;
+            background: var(--golden);
+            color: var(--white);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .add-custom-ingredient-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--mint);
+            border: 2px dashed var(--forest-medium);
+            border-radius: var(--radius-sm);
+            color: var(--forest-dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .add-custom-ingredient-btn:hover {
+            background: var(--sage);
+            border-color: var(--forest-dark);
+        }
+
+        .custom-ingredient-form {
+            background: var(--cream);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-top: 16px;
+        }
+
+        .custom-ingredient-form h4 {
+            font-family: 'Crimson Pro', serif;
+            color: var(--forest-dark);
+            margin-bottom: 16px;
+            font-size: 1.3rem;
+        }
+
+        .nutrition-inputs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .nutrition-inputs label {
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .nutrition-inputs input {
+            width: 100%;
+        }
+
+        .custom-ing-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .delete-recipe-btn {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            z-index: 3;
+            background: var(--tomato);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            color: var(--white);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .recipe-card.custom:hover .delete-recipe-btn {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .delete-recipe-btn:hover {
+            transform: scale(1.1);
+            background: #c0392b;
+        }
+
+        .recipe-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .export-recipe-btn {
+            flex: 1;
+            padding: 14px 28px;
+            background: var(--white);
+            color: var(--forest-dark);
+            border: 2px solid var(--forest-dark);
+            border-radius: var(--radius-md);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .export-recipe-btn:hover {
+            background: var(--forest-dark);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .monthly-chart {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            color: var(--forest-dark);
+        }
+
+        .month-nav {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .month-nav button {
+            background: var(--white);
+            border: 2px solid var(--mint);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--forest-dark);
+        }
+
+        .month-nav button:hover {
+            background: var(--mint);
+            border-color: var(--forest-medium);
+        }
+
+        .month-label {
+            font-weight: 600;
+            color: var(--forest-dark);
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 250px;
+            position: relative;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .week-selector {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .week-selector-label {
+            font-weight: 600;
+            color: var(--forest-dark);
+            font-size: 1.1rem;
+        }
+
+        .week-selector-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .week-selector-controls button {
+            background: var(--white);
+            border: 2px solid var(--mint);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--forest-dark);
+        }
+
+        .week-selector-controls button:hover {
+            background: var(--mint);
+            border-color: var(--forest-medium);
+        }
+
+        .week-selector-date {
+            font-weight: 600;
+            color: var(--forest-dark);
+            min-width: 220px;
+            text-align: center;
+        }
+
+        .recipe-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .recipe-modal.show {
+            display: flex;
+        }
+
+        .recipe-modal-content {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 0;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: auto;
+        }
+
+        .recipe-modal-header {
+            background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-medium) 100%);
+            padding: 32px;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            color: var(--white);
+            position: relative;
+        }
+
+        .recipe-modal-emoji {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .recipe-modal-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .recipe-modal-origin {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: var(--white);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .recipe-modal-body {
+            padding: 32px;
+        }
+
+        .recipe-section {
+            margin-bottom: 32px;
+        }
+
+        .recipe-section-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--forest-dark);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--mint);
+        }
+
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .nutrition-item {
+            background: var(--cream);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+        }
+
+        .nutrition-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--forest-dark);
+            margin-bottom: 4px;
+        }
+
+        .nutrition-label {
+            font-size: 0.85rem;
+            color: var(--warm-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ingredients-category {
+            margin-bottom: 20px;
+        }
+
+        .ingredients-category-name {
+            font-weight: 700;
+            color: var(--forest-medium);
+            margin-bottom: 8px;
+            text-transform: capitalize;
+        }
+
+        .ingredients-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .ingredients-list li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            color: var(--charcoal);
+        }
+
+        .ingredients-list li::before {
+            content: '•';
+            position: absolute;
+            left: 8px;
+            color: var(--forest-medium);
+            font-weight: 700;
+        }
+
+        .select-recipe-btn {
+            width: 100%;
+            padding: 16px 28px;
+            background: var(--forest-dark);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+            margin-top: 24px;
+        }
+
+        .select-recipe-btn:hover {
+            background: var(--forest-medium);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .select-recipe-btn.selected {
+            background: var(--sage);
+        }
+
+        .select-recipe-btn.selected::before {
+            content: '✓ ';
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .logo { font-size: 2.5rem; }
+            .recipe-grid { grid-template-columns: 1fr; }
+            .planner-stats { grid-template-columns: 1fr; }
+        }
+
+        .install-prompt {
+            background: var(--forest-dark);
+            color: var(--white);
+            padding: 16px 24px;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-lg);
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .install-prompt.show { display: flex; }
+
+        .install-btn {
+            background: var(--white);
+            color: var(--forest-dark);
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .install-btn:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function getWeekStart(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day;
+            return new Date(d.setDate(diff));
+        }
+
+        const RECIPES = [
+            {
+                id: 1,
+                name: "Palak Paneer",
+                origin: "Indian • Hebbar's Kitchen",
+                emoji: "🥬",
+                servings: 4,
+                servingSize: "1 cup",
+                nutrition: { calories: 225, protein: 15, fiber: 4, carbs: 12, fat: 14 },
+                ingredients: {
+                    produce: ["Spinach (4 cups)", "Tomatoes (2 medium)", "Onion (1 large)", "Ginger (1 inch)", "Garlic (4 cloves)"],
+                    dairy: ["Paneer (14 oz)", "Heavy cream (1/4 cup)"],
+                    pantry: ["Cumin seeds (1 tsp)", "Garam masala (1 tsp)", "Turmeric (1/2 tsp)", "Oil (2 tbsp)"]
+                }
+            },
+            {
+                id: 2,
+                name: "Chickpea Curry (Chana Masala)",
+                origin: "Indian • Hebbar's Kitchen",
+                emoji: "🍛",
+                servings: 6,
+                servingSize: "1 cup",
+                nutrition: { calories: 280, protein: 12, fiber: 10, carbs: 42, fat: 8 },
+                ingredients: {
+                    produce: ["Tomatoes (3 medium)", "Onions (2 medium)", "Ginger (1 inch)", "Garlic (6 cloves)", "Cilantro (1/4 cup)"],
+                    canned: ["Chickpeas (2 cans, 15 oz each)"],
+                    pantry: ["Cumin seeds (1 tsp)", "Coriander powder (2 tsp)", "Garam masala (1 tsp)", "Turmeric (1/2 tsp)", "Oil (2 tbsp)"]
+                }
+            },
+            {
+                id: 3,
+                name: "Thai Peanut Tofu Bowl",
+                origin: "Global • Rainbow Plant Life",
+                emoji: "🥜",
+                servings: 4,
+                servingSize: "1 cup",
+                nutrition: { calories: 380, protein: 22, fiber: 8, carbs: 35, fat: 18 },
+                ingredients: {
+                    produce: ["Red bell pepper (1 large)", "Carrots (2 medium)", "Cabbage (2 cups shredded)", "Lime (1)", "Cilantro (1/4 cup)"],
+                    protein: ["Extra-firm tofu (14 oz)"],
+                    pantry: ["Peanut butter (1/3 cup)", "Soy sauce (3 tbsp)", "Rice vinegar (2 tbsp)", "Sesame oil (1 tbsp)", "Brown rice (2 cups cooked)"]
+                }
+            },
+            {
+                id: 4,
+                name: "Lentil Bolognese",
+                origin: "Global • Rainbow Plant Life",
+                emoji: "🍝",
+                servings: 6,
+                servingSize: "1 cup",
+                nutrition: { calories: 320, protein: 16, fiber: 11, carbs: 48, fat: 7 },
+                ingredients: {
+                    produce: ["Carrots (2 medium)", "Celery (2 stalks)", "Onion (1 large)", "Garlic (5 cloves)", "Tomatoes (1 can, 28 oz)"],
+                    pantry: ["Brown lentils (1 cup dry)", "Tomato paste (3 tbsp)", "Red wine (1/2 cup, optional)", "Olive oil (2 tbsp)", "Italian seasoning (2 tsp)"],
+                    pasta: ["Whole wheat pasta (12 oz)"]
+                }
+            },
+            {
+                id: 5,
+                name: "Black Bean Sweet Potato Burrito Bowl",
+                origin: "Global • Rainbow Plant Life",
+                emoji: "🌯",
+                servings: 4,
+                servingSize: "1 cup",
+                nutrition: { calories: 340, protein: 14, fiber: 13, carbs: 58, fat: 6 },
+                ingredients: {
+                    produce: ["Sweet potatoes (2 large)", "Red onion (1 medium)", "Bell peppers (2)", "Lime (2)", "Cilantro (1/2 cup)", "Avocado (1)"],
+                    canned: ["Black beans (2 cans, 15 oz each)", "Corn (1 cup)"],
+                    pantry: ["Cumin (2 tsp)", "Chili powder (1 tsp)", "Brown rice (2 cups cooked)", "Olive oil (2 tbsp)"]
+                }
+            }
+        ];
+
+        const DAILY_GOALS = { calories: 1300, protein: 90, fiber: 30, fat: 45 };
+
+        const COMMON_INGREDIENTS = [
+            { name: "Broccoli", category: "Vegetables", perCup: { calories: 31, protein: 3, fiber: 2, carbs: 6, fat: 0 } },
+            { name: "Spinach", category: "Vegetables", perCup: { calories: 7, protein: 1, fiber: 1, carbs: 1, fat: 0 } },
+            { name: "Carrots", category: "Vegetables", perCup: { calories: 52, protein: 1, fiber: 4, carbs: 12, fat: 0 } },
+            { name: "Bell Peppers", category: "Vegetables", perCup: { calories: 30, protein: 1, fiber: 2, carbs: 7, fat: 0 } },
+            { name: "Cauliflower", category: "Vegetables", perCup: { calories: 25, protein: 2, fiber: 2, carbs: 5, fat: 0 } },
+            { name: "Tomatoes", category: "Vegetables", perCup: { calories: 32, protein: 2, fiber: 2, carbs: 7, fat: 0 } },
+            { name: "Cucumber", category: "Vegetables", perCup: { calories: 16, protein: 1, fiber: 1, carbs: 4, fat: 0 } },
+            { name: "Kale", category: "Vegetables", perCup: { calories: 33, protein: 3, fiber: 1, carbs: 6, fat: 1 } },
+            { name: "Apple", category: "Fruits", perCup: { calories: 95, protein: 0, fiber: 4, carbs: 25, fat: 0 } },
+            { name: "Banana", category: "Fruits", perCup: { calories: 134, protein: 2, fiber: 4, carbs: 34, fat: 0 } },
+            { name: "Blueberries", category: "Fruits", perCup: { calories: 84, protein: 1, fiber: 4, carbs: 21, fat: 0 } },
+            { name: "Strawberries", category: "Fruits", perCup: { calories: 49, protein: 1, fiber: 3, carbs: 12, fat: 0 } },
+            { name: "Orange", category: "Fruits", perCup: { calories: 85, protein: 1, fiber: 4, carbs: 21, fat: 0 } },
+            { name: "Mango", category: "Fruits", perCup: { calories: 99, protein: 1, fiber: 3, carbs: 25, fat: 1 } },
+            { name: "Chickpeas", category: "Protein", perCup: { calories: 269, protein: 15, fiber: 12, carbs: 45, fat: 4 } },
+            { name: "Black Beans", category: "Protein", perCup: { calories: 227, protein: 15, fiber: 15, carbs: 41, fat: 1 } },
+            { name: "Lentils", category: "Protein", perCup: { calories: 230, protein: 18, fiber: 16, carbs: 40, fat: 1 } },
+            { name: "Tofu", category: "Protein", perCup: { calories: 188, protein: 20, fiber: 2, carbs: 5, fat: 12 } },
+            { name: "Tempeh", category: "Protein", perCup: { calories: 320, protein: 31, fiber: 16, carbs: 16, fat: 18 } },
+            { name: "Edamame", category: "Protein", perCup: { calories: 188, protein: 17, fiber: 8, carbs: 14, fat: 8 } },
+            { name: "Greek Yogurt", category: "Protein", perCup: { calories: 130, protein: 22, fiber: 0, carbs: 9, fat: 0 } },
+            { name: "Cottage Cheese", category: "Protein", perCup: { calories: 206, protein: 28, fiber: 0, carbs: 8, fat: 9 } },
+            { name: "Eggs (2 large)", category: "Protein", perCup: { calories: 140, protein: 12, fiber: 0, carbs: 1, fat: 10 } },
+            { name: "Paneer", category: "Protein", perCup: { calories: 321, protein: 25, fiber: 0, carbs: 6, fat: 22 } },
+            { name: "Brown Rice", category: "Grains", perCup: { calories: 218, protein: 5, fiber: 4, carbs: 46, fat: 2 } },
+            { name: "Quinoa", category: "Grains", perCup: { calories: 222, protein: 8, fiber: 5, carbs: 39, fat: 4 } },
+            { name: "Oats", category: "Grains", perCup: { calories: 307, protein: 11, fiber: 8, carbs: 55, fat: 5 } },
+            { name: "Whole Wheat Pasta", category: "Grains", perCup: { calories: 174, protein: 7, fiber: 6, carbs: 37, fat: 1 } },
+            { name: "Whole Wheat Bread (2 slices)", category: "Grains", perCup: { calories: 160, protein: 8, fiber: 4, carbs: 28, fat: 2 } },
+            { name: "Almonds", category: "Nuts & Seeds", perCup: { calories: 529, protein: 20, fiber: 11, carbs: 20, fat: 46 } },
+            { name: "Walnuts", category: "Nuts & Seeds", perCup: { calories: 654, protein: 15, fiber: 7, carbs: 14, fat: 65 } },
+            { name: "Peanut Butter (2 tbsp)", category: "Nuts & Seeds", perCup: { calories: 188, protein: 8, fiber: 2, carbs: 7, fat: 16 } },
+            { name: "Almond Butter (2 tbsp)", category: "Nuts & Seeds", perCup: { calories: 196, protein: 7, fiber: 3, carbs: 6, fat: 18 } },
+            { name: "Chia Seeds (2 tbsp)", category: "Nuts & Seeds", perCup: { calories: 97, protein: 3, fiber: 8, carbs: 8, fat: 6 } },
+            { name: "Flax Seeds (2 tbsp)", category: "Nuts & Seeds", perCup: { calories: 74, protein: 3, fiber: 4, carbs: 4, fat: 6 } },
+            { name: "Avocado", category: "Fats", perCup: { calories: 240, protein: 3, fiber: 10, carbs: 13, fat: 22 } },
+            { name: "Olive Oil (1 tbsp)", category: "Fats", perCup: { calories: 119, protein: 0, fiber: 0, carbs: 0, fat: 14 } },
+            { name: "Hummus", category: "Other", perCup: { calories: 166, protein: 5, fiber: 5, carbs: 14, fat: 10 } },
+            { name: "Sweet Potato", category: "Vegetables", perCup: { calories: 114, protein: 2, fiber: 4, carbs: 27, fat: 0 } },
+        ];
+
+        const COMMON_FOODS = [
+            { name: "Potato Chips", category: "Snacks", serving: "serving", per100g: { calories: 536, protein: 7, fiber: 4, carbs: 53, fat: 34 } },
+            { name: "Tortilla Chips", category: "Snacks", serving: "serving", per100g: { calories: 503, protein: 7, fiber: 5, carbs: 61, fat: 26 } },
+            { name: "Pretzels", category: "Snacks", serving: "serving", per100g: { calories: 380, protein: 10, fiber: 3, carbs: 80, fat: 3 } },
+            { name: "Popcorn", category: "Snacks", serving: "serving", per100g: { calories: 387, protein: 13, fiber: 15, carbs: 78, fat: 4 } },
+            { name: "Chocolate Cake", category: "Desserts", serving: "slice", per100g: { calories: 371, protein: 5, fiber: 2, carbs: 50, fat: 16 } },
+            { name: "Vanilla Cake", category: "Desserts", serving: "slice", per100g: { calories: 349, protein: 4, fiber: 1, carbs: 54, fat: 13 } },
+            { name: "Cheesecake", category: "Desserts", serving: "slice", per100g: { calories: 321, protein: 6, fiber: 1, carbs: 26, fat: 23 } },
+            { name: "Brownie", category: "Desserts", serving: "piece", per100g: { calories: 466, protein: 6, fiber: 3, carbs: 63, fat: 21 } },
+            { name: "Chocolate Chip Cookie", category: "Desserts", serving: "cookie", per100g: { calories: 488, protein: 5, fiber: 2, carbs: 68, fat: 23 } },
+            { name: "Donut", category: "Desserts", serving: "donut", per100g: { calories: 452, protein: 5, fiber: 1, carbs: 51, fat: 25 } },
+            { name: "Muffin", category: "Desserts", serving: "muffin", per100g: { calories: 377, protein: 6, fiber: 2, carbs: 51, fat: 17 } },
+            { name: "Milk", category: "Dairy", serving: "glass", per100g: { calories: 61, protein: 3, fiber: 0, carbs: 5, fat: 3 } },
+            { name: "Almond Milk", category: "Dairy", serving: "glass", per100g: { calories: 17, protein: 1, fiber: 0, carbs: 1, fat: 1 } },
+            { name: "Kefir", category: "Dairy", serving: "glass", per100g: { calories: 41, protein: 3, fiber: 0, carbs: 5, fat: 1 } },
+            { name: "Yogurt", category: "Dairy", serving: "serving", per100g: { calories: 59, protein: 10, fiber: 0, carbs: 4, fat: 0 } },
+            { name: "Cheese", category: "Dairy", serving: "serving", per100g: { calories: 402, protein: 25, fiber: 0, carbs: 1, fat: 33 } },
+            { name: "Ice Cream", category: "Desserts", serving: "scoop", per100g: { calories: 207, protein: 4, fiber: 1, carbs: 24, fat: 11 } },
+            { name: "Coffee", category: "Beverages", serving: "cup", per100g: { calories: 2, protein: 0, fiber: 0, carbs: 0, fat: 0 } },
+            { name: "Tea", category: "Beverages", serving: "cup", per100g: { calories: 1, protein: 0, fiber: 0, carbs: 0, fat: 0 } },
+            { name: "Orange Juice", category: "Beverages", serving: "glass", per100g: { calories: 45, protein: 1, fiber: 0, carbs: 10, fat: 0 } },
+            { name: "Soda", category: "Beverages", serving: "glass", per100g: { calories: 41, protein: 0, fiber: 0, carbs: 11, fat: 0 } },
+            { name: "Pizza", category: "Fast Food", serving: "slice", per100g: { calories: 266, protein: 11, fiber: 2, carbs: 33, fat: 10 } },
+            { name: "Burger", category: "Fast Food", serving: "burger", per100g: { calories: 295, protein: 17, fiber: 1, carbs: 24, fat: 14 } },
+            { name: "French Fries", category: "Fast Food", serving: "serving", per100g: { calories: 312, protein: 4, fiber: 3, carbs: 41, fat: 15 } },
+            { name: "Nachos", category: "Fast Food", serving: "serving", per100g: { calories: 346, protein: 9, fiber: 5, carbs: 36, fat: 19 } },
+            { name: "Pancakes", category: "Breakfast", serving: "pancake", per100g: { calories: 227, protein: 6, fiber: 1, carbs: 28, fat: 10 } },
+            { name: "Waffles", category: "Breakfast", serving: "waffle", per100g: { calories: 291, protein: 6, fiber: 2, carbs: 33, fat: 15 } },
+            { name: "Cereal", category: "Breakfast", serving: "serving", per100g: { calories: 379, protein: 8, fiber: 5, carbs: 84, fat: 2 } },
+            { name: "Granola", category: "Breakfast", serving: "serving", per100g: { calories: 471, protein: 11, fiber: 7, carbs: 64, fat: 20 } },
+        ];
+
+        // --- Ingredient scaling helpers ---
+        function parseIngredientQty(str) {
+            const match = str.match(/^([\d./]+)\s*(.*)/);
+            if (!match) return null;
+            let num;
+            if (match[1].includes('/')) {
+                const parts = match[1].split('/');
+                num = parseFloat(parts[0]) / parseFloat(parts[1]);
+            } else {
+                num = parseFloat(match[1]);
+            }
+            return { value: num, unit: match[2].trim() };
+        }
+
+        function formatIngredientNum(n) {
+            if (n <= 0) return '1/4';
+            const rounded = Math.round(n * 4) / 4;
+            const whole = Math.floor(rounded);
+            const frac = rounded - whole;
+            const fracStr = frac === 0 ? '' : frac === 0.25 ? '1/4' : frac === 0.5 ? '1/2' : '3/4';
+            if (whole === 0) return fracStr || '1/4';
+            if (fracStr === '') return whole.toString();
+            return whole + ' ' + fracStr;
+        }
+
+        function scaleIngredient(ingredientStr, originalServings, newServings) {
+            if (originalServings === newServings) return ingredientStr;
+            const itemMatch = ingredientStr.match(/^(.+?)\s*\((.+?)\)\s*$/);
+            if (!itemMatch) return ingredientStr;
+            const itemName = itemMatch[1];
+            const quantityStr = itemMatch[2];
+            const parsed = parseIngredientQty(quantityStr);
+            if (!parsed || parsed.value === 0) return ingredientStr;
+            const newValue = parsed.value * (newServings / originalServings);
+            const formatted = formatIngredientNum(newValue);
+            const unitStr = parsed.unit ? ' ' + parsed.unit : '';
+            return `${itemName} (${formatted}${unitStr})`;
+        }
+
+        function App() {
+            const [activeTab, setActiveTab] = useState('recipes');
+            const [selectedRecipes, setSelectedRecipes] = useState([]);
+            const [loggedMeals, setLoggedMeals] = useState([]);
+            const [currentMeal, setCurrentMeal] = useState({ recipe: '', portions: 1 });
+            const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+            const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+            const [deferredPrompt, setDeferredPrompt] = useState(null);
+            const [showShareModal, setShowShareModal] = useState(false);
+            const [shareMethod, setShareMethod] = useState('');
+            const [shareInput, setShareInput] = useState('');
+            const [viewingRecipe, setViewingRecipe] = useState(null);
+            const [modalServings, setModalServings] = useState(null);
+            const [weeklyServingOverrides, setWeeklyServingOverrides] = useState({}); // {weekKey: {recipeId: servings}}
+            const [searchQuery, setSearchQuery] = useState('');
+            const [selectedIngredient, setSelectedIngredient] = useState(null);
+            const [ingredientPortion, setIngredientPortion] = useState(1);
+            const [logType, setLogType] = useState('recipe');
+            const [showCreateRecipe, setShowCreateRecipe] = useState(false);
+            const [customRecipes, setCustomRecipes] = useState([]);
+            const [newRecipe, setNewRecipe] = useState({ name: '', emoji: '🍽️', servings: 4, ingredients: [] });
+            const [recipeSearchQuery, setRecipeSearchQuery] = useState('');
+            const [recipeIngredientPortion, setRecipeIngredientPortion] = useState(1);
+            const [showAddCustomIngredient, setShowAddCustomIngredient] = useState(false);
+            const [customIngredient, setCustomIngredient] = useState({ name: '', category: 'Other', calories: 0, protein: 0, fiber: 0, carbs: 0, fat: 0 });
+            const [chartMonth, setChartMonth] = useState(new Date());
+            const [selectedWeek, setSelectedWeek] = useState(getWeekStart(new Date()));
+            const [weeklyMealSelections, setWeeklyMealSelections] = useState({});
+
+            useEffect(() => {
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    setDeferredPrompt(e);
+                    setShowInstallPrompt(true);
+                });
+                const saved = localStorage.getItem('mealPrepData');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    setLoggedMeals(data.loggedMeals || []);
+                    setCustomRecipes(data.customRecipes || []);
+                    setWeeklyMealSelections(data.weeklyMealSelections || {});
+                    setWeeklyServingOverrides(data.weeklyServingOverrides || {});
+                }
+            }, []);
+
+            useEffect(() => {
+                localStorage.setItem('mealPrepData', JSON.stringify({ loggedMeals, customRecipes, weeklyMealSelections, weeklyServingOverrides }));
+            }, [loggedMeals, customRecipes, weeklyMealSelections, weeklyServingOverrides]);
+
+            const handleInstallClick = () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then(() => {
+                        setDeferredPrompt(null);
+                        setShowInstallPrompt(false);
+                    });
+                }
+            };
+
+            const getWeekKey = (weekStart) => weekStart.toISOString().split('T')[0];
+
+            const getSelectedWeekRecipes = () => {
+                const weekKey = getWeekKey(selectedWeek);
+                return weeklyMealSelections[weekKey] || [];
+            };
+
+            const toggleRecipeForWeek = (recipe) => {
+                const weekKey = getWeekKey(selectedWeek);
+                const currentSelections = weeklyMealSelections[weekKey] || [];
+                const exists = currentSelections.find(r => r.id === recipe.id);
+                setWeeklyMealSelections({
+                    ...weeklyMealSelections,
+                    [weekKey]: exists
+                        ? currentSelections.filter(r => r.id !== recipe.id)
+                        : [...currentSelections, recipe]
+                });
+            };
+
+            const isRecipeSelectedForWeek = (recipe) => {
+                return !!(getSelectedWeekRecipes().find(r => r.id === recipe.id));
+            };
+
+            const changeWeek = (direction) => {
+                const newWeek = new Date(selectedWeek);
+                newWeek.setDate(selectedWeek.getDate() + (direction * 7));
+                setSelectedWeek(getWeekStart(newWeek));
+            };
+
+            const changeMonth = (direction) => {
+                const newMonth = new Date(chartMonth);
+                newMonth.setMonth(chartMonth.getMonth() + direction);
+                setChartMonth(newMonth);
+            };
+
+            const getServingOverride = (recipe) => {
+                const weekKey = getWeekKey(selectedWeek);
+                return (weeklyServingOverrides[weekKey] || {})[recipe.id] || recipe.servings;
+            };
+
+            const setServingOverride = (recipe, servings) => {
+                const weekKey = getWeekKey(selectedWeek);
+                setWeeklyServingOverrides({
+                    ...weeklyServingOverrides,
+                    [weekKey]: { ...(weeklyServingOverrides[weekKey] || {}), [recipe.id]: servings }
+                });
+            };
+
+            const generateShoppingList = () => {
+                const ingredients = { produce: {}, protein: {}, dairy: {}, canned: {}, pantry: {}, pasta: {}, custom: {} };
+                const weekRecipes = getSelectedWeekRecipes();
+                weekRecipes.forEach(recipe => {
+                    const targetServings = getServingOverride(recipe);
+                    Object.keys(recipe.ingredients).forEach(category => {
+                        if (ingredients[category]) {
+                            recipe.ingredients[category].forEach(item => {
+                                const match = item.match(/^(.+?)\s*\((.+?)\)$/);
+                                if (match) {
+                                    const itemName = match[1];
+                                    const scaledItem = scaleIngredient(item, recipe.servings, targetServings);
+                                    const scaledMatch = scaledItem.match(/\((.+?)\)$/);
+                                    const qty = scaledMatch ? scaledMatch[1] : match[2];
+                                    const key = itemName;
+                                    if (ingredients[category][key]) {
+                                        ingredients[category][key] += ` + ${qty} (${recipe.name})`;
+                                    } else {
+                                        ingredients[category][key] = `${qty} (${recipe.name})`;
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+                const result = {};
+                Object.keys(ingredients).forEach(category => {
+                    result[category] = Object.entries(ingredients[category]).map(([item, qty]) => `${item} - ${qty}`);
+                });
+                return result;
+            };
+
+            const getUncheckedItems = () => {
+                const list = generateShoppingList();
+                const unchecked = [];
+                Object.entries(list).forEach(([category, items]) => {
+                    items.forEach((item, idx) => {
+                        const checkbox = document.querySelector(`input[data-category="${category}"][data-index="${idx}"]`);
+                        if (checkbox && !checkbox.checked) unchecked.push(`• ${item}`);
+                    });
+                });
+                return unchecked;
+            };
+
+            const handleShareClick = (method) => { setShareMethod(method); setShowShareModal(true); };
+
+            const confirmShare = () => {
+                const items = getUncheckedItems();
+                if (items.length === 0) { alert('All items are checked off!'); setShowShareModal(false); return; }
+                const message = `🌿 Fresh Prep Shopping List\n\n${items.join('\n')}`;
+                if (shareMethod === 'email') {
+                    window.location.href = `mailto:${shareInput}?subject=Fresh Prep Shopping List&body=${encodeURIComponent(message)}`;
+                } else if (shareMethod === 'sms') {
+                    const separator = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? '&' : '?';
+                    window.location.href = `sms:${shareInput}${separator}body=${encodeURIComponent(message)}`;
+                }
+                setShowShareModal(false);
+                setShareInput('');
+            };
+
+            const logMeal = (e) => {
+                e.preventDefault();
+                if (!currentMeal.recipe) return;
+                const recipe = getSelectedWeekRecipes().find(r => r.id === parseInt(currentMeal.recipe));
+                if (!recipe) { alert('Recipe not found. Please select a recipe from this week\'s meal plan.'); return; }
+                const portions = parseFloat(currentMeal.portions);
+                const logged = {
+                    id: Date.now(), recipe: recipe.name, portions,
+                    date: selectedDate, time: new Date().toLocaleTimeString(),
+                    nutrition: {
+                        calories: Math.round(recipe.nutrition.calories * portions),
+                        protein: Math.round(recipe.nutrition.protein * portions),
+                        fiber: Math.round(recipe.nutrition.fiber * portions),
+                        fat: Math.round(recipe.nutrition.fat * portions)
+                    }
+                };
+                setLoggedMeals([...loggedMeals, logged]);
+                setCurrentMeal({ recipe: '', portions: 1 });
+            };
+
+            const logIngredient = (e) => {
+                e.preventDefault();
+                let ingredientToLog = selectedIngredient;
+                let servingUnit = 'serving';
+                if (!ingredientToLog && searchQuery.trim()) {
+                    const localMatch = COMMON_FOODS.find(food =>
+                        food.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        searchQuery.toLowerCase().includes(food.name.toLowerCase())
+                    );
+                    if (localMatch) {
+                        ingredientToLog = { name: localMatch.name, perCup: localMatch.per100g, foundViaAPI: true, servingUnit: localMatch.serving };
+                    } else {
+                        alert('Item not found. Create recipe to log item.');
+                        return;
+                    }
+                } else if (selectedIngredient) {
+                    servingUnit = 'cup';
+                }
+                if (!ingredientToLog) { alert('Please enter an item name or select from the dropdown'); return; }
+                const portions = parseFloat(ingredientPortion);
+                const logged = {
+                    id: Date.now(), recipe: ingredientToLog.name, portions,
+                    servingUnit: ingredientToLog.servingUnit || servingUnit,
+                    date: selectedDate, time: new Date().toLocaleTimeString(),
+                    isIngredient: true, foundViaAPI: ingredientToLog.foundViaAPI,
+                    nutrition: {
+                        calories: Math.round(ingredientToLog.perCup.calories * portions),
+                        protein: Math.round(ingredientToLog.perCup.protein * portions),
+                        fiber: Math.round(ingredientToLog.perCup.fiber * portions),
+                        fat: Math.round(ingredientToLog.perCup.fat * portions)
+                    }
+                };
+                setLoggedMeals([...loggedMeals, logged]);
+                setSelectedIngredient(null);
+                setIngredientPortion(1);
+                setSearchQuery('');
+            };
+
+            const filteredIngredients = COMMON_INGREDIENTS.filter(i =>
+                i.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                i.category.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+
+            const recipeFilteredIngredients = COMMON_INGREDIENTS.filter(i =>
+                i.name.toLowerCase().includes(recipeSearchQuery.toLowerCase()) ||
+                i.category.toLowerCase().includes(recipeSearchQuery.toLowerCase())
+            );
+
+            const addIngredientToRecipe = (ingredient) => {
+                const portion = parseFloat(recipeIngredientPortion) || 0.25;
+                if (portion <= 0 || portion > 10) return;
+                setNewRecipe({ ...newRecipe, ingredients: [...newRecipe.ingredients, { ...ingredient, portions: portion }] });
+                setRecipeSearchQuery('');
+                setRecipeIngredientPortion(1);
+            };
+
+            const openCustomIngredientForm = () => {
+                setCustomIngredient({ name: recipeSearchQuery, category: 'Other', calories: 0, protein: 0, fiber: 0, carbs: 0, fat: 0 });
+                setShowAddCustomIngredient(true);
+            };
+
+            const saveCustomIngredient = () => {
+                if (!customIngredient.name || customIngredient.calories < 0) { alert('Please enter a valid ingredient name and nutrition values'); return; }
+                const ingredient = {
+                    name: customIngredient.name, category: customIngredient.category,
+                    perCup: {
+                        calories: parseInt(customIngredient.calories) || 0,
+                        protein: parseInt(customIngredient.protein) || 0,
+                        fiber: parseInt(customIngredient.fiber) || 0,
+                        carbs: parseInt(customIngredient.carbs) || 0,
+                        fat: parseInt(customIngredient.fat) || 0
+                    }
+                };
+                addIngredientToRecipe(ingredient);
+                setShowAddCustomIngredient(false);
+                setRecipeSearchQuery('');
+            };
+
+            const removeIngredientFromRecipe = (index) => {
+                setNewRecipe({ ...newRecipe, ingredients: newRecipe.ingredients.filter((_, i) => i !== index) });
+            };
+
+            const calculateRecipeNutrition = () => {
+                const totals = newRecipe.ingredients.reduce((acc, ing) => ({
+                    calories: acc.calories + (ing.perCup.calories * ing.portions),
+                    protein: acc.protein + (ing.perCup.protein * ing.portions),
+                    fiber: acc.fiber + (ing.perCup.fiber * ing.portions),
+                    carbs: acc.carbs + (ing.perCup.carbs * ing.portions),
+                    fat: acc.fat + (ing.perCup.fat * ing.portions)
+                }), { calories: 0, protein: 0, fiber: 0, carbs: 0, fat: 0 });
+                const servings = parseInt(newRecipe.servings) || 1;
+                return {
+                    calories: Math.round(totals.calories / servings),
+                    protein: Math.round(totals.protein / servings),
+                    fiber: Math.round(totals.fiber / servings),
+                    carbs: Math.round(totals.carbs / servings),
+                    fat: Math.round(totals.fat / servings)
+                };
+            };
+
+            const saveCustomRecipe = () => {
+                if (!newRecipe.name || newRecipe.ingredients.length === 0) { alert('Please add a recipe name and at least one ingredient'); return; }
+                const nutrition = calculateRecipeNutrition();
+                const recipe = {
+                    id: Date.now(), name: newRecipe.name, emoji: newRecipe.emoji,
+                    origin: "Custom Recipe", servings: parseInt(newRecipe.servings),
+                    servingSize: "1 cup", nutrition: nutrition,
+                    ingredients: { custom: newRecipe.ingredients.map(ing => `${ing.name} (${ing.portions} cup${ing.portions !== 1 ? 's' : ''})`) },
+                    isCustom: true
+                };
+                setCustomRecipes([...customRecipes, recipe]);
+                setNewRecipe({ name: '', emoji: '🍽️', servings: 4, ingredients: [] });
+                setShowCreateRecipe(false);
+            };
+
+            const deleteCustomRecipe = (recipeId) => {
+                if (confirm('Are you sure you want to delete this custom recipe?')) {
+                    setCustomRecipes(customRecipes.filter(r => r.id !== recipeId));
+                    setSelectedRecipes(selectedRecipes.filter(r => r.id !== recipeId));
+                    if (viewingRecipe && viewingRecipe.id === recipeId) setViewingRecipe(null);
+                }
+            };
+
+            const exportRecipe = (recipe) => {
+                const dataStr = JSON.stringify({ name: recipe.name, emoji: recipe.emoji, servings: recipe.servings, nutrition: recipe.nutrition, ingredients: recipe.ingredients }, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${recipe.name.replace(/\s+/g, '_')}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+            };
+
+            const getDailyTotals = () => {
+                return loggedMeals.filter(m => m.date === selectedDate).reduce((totals, meal) => ({
+                    calories: totals.calories + meal.nutrition.calories,
+                    protein: totals.protein + meal.nutrition.protein,
+                    fiber: totals.fiber + meal.nutrition.fiber,
+                    fat: totals.fat + (meal.nutrition.fat || 0)
+                }), { calories: 0, protein: 0, fiber: 0, fat: 0 });
+            };
+
+            const getMonthlyData = () => {
+                const year = chartMonth.getFullYear();
+                const month = chartMonth.getMonth();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const dailyData = [];
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const dayMeals = loggedMeals.filter(m => m.date === dateStr);
+                    const totals = dayMeals.reduce((acc, meal) => ({
+                        calories: acc.calories + meal.nutrition.calories,
+                        protein: acc.protein + meal.nutrition.protein,
+                        fiber: acc.fiber + meal.nutrition.fiber,
+                        fat: acc.fat + (meal.nutrition.fat || 0)
+                    }), { calories: 0, protein: 0, fiber: 0, fat: 0 });
+                    dailyData.push({ day, date: dateStr, ...totals });
+                }
+                return dailyData;
+            };
+
+            const formatDate = (dateString) => {
+                const date = new Date(dateString + 'T00:00:00');
+                const today = new Date(); today.setHours(0,0,0,0);
+                const selected = new Date(date); selected.setHours(0,0,0,0);
+                if (selected.getTime() === today.getTime()) return 'Today';
+                if (selected.getTime() === today.getTime() - 86400000) return 'Yesterday';
+                if (selected.getTime() === today.getTime() + 86400000) return 'Tomorrow';
+                return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            };
+
+            const allRecipes = [...RECIPES, ...customRecipes];
+            const todaysMeals = loggedMeals.filter(m => m.date === selectedDate);
+            const totals = getDailyTotals();
+            const monthlyData = getMonthlyData();
+
+            const weekSelectorUI = (label) => (
+                <div className="week-selector">
+                    <span className="week-selector-label">{label}</span>
+                    <div className="week-selector-controls">
+                        <button onClick={() => changeWeek(-1)}>←</button>
+                        <span className="week-selector-date">
+                            {selectedWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} -{' '}
+                            {new Date(selectedWeek.getTime() + 6 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </span>
+                        <button onClick={() => changeWeek(1)}>→</button>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="container">
+                    {showInstallPrompt && (
+                        <div className="install-prompt show">
+                            <span>📱 Add Fresh Prep to your home screen for easy access!</span>
+                            <button className="install-btn" onClick={handleInstallClick}>Install</button>
+                        </div>
+                    )}
+
+                    <header>
+                        <h1 className="logo">🌿 Fresh Prep</h1>
+                        <p className="tagline">Wholesome Vegetarian Meal Planning</p>
+                        <div className="nav-tabs">
+                            {['recipes', 'planner', 'shopping', 'logger'].map(tab => (
+                                <button key={tab} className={`tab-btn ${activeTab === tab ? 'active' : ''}`} onClick={() => setActiveTab(tab)}>
+                                    {tab.charAt(0).toUpperCase() + tab.slice(1).replace('logger', 'Food Logger').replace('shopping', 'Shopping List').replace('planner', 'Meal Planner').replace('recipes', 'Recipes')}
+                                </button>
+                            ))}
+                        </div>
+                    </header>
+
+                    {/* RECIPES TAB */}
+                    <div className={`tab-content ${activeTab === 'recipes' ? 'active' : ''}`}>
+                        {weekSelectorUI('Select meals for:')}
+                        <div className="recipe-grid">
+                            {allRecipes.map((recipe, idx) => {
+                                const isSelected = isRecipeSelectedForWeek(recipe);
+                                return (
+                                    <div key={recipe.id} className={`recipe-card ${recipe.isCustom ? 'custom' : ''}`} style={{animationDelay: `${idx * 0.1}s`}}>
+                                        {recipe.isCustom && (
+                                            <button className="delete-recipe-btn" onClick={(e) => { e.stopPropagation(); deleteCustomRecipe(recipe.id); }} title="Delete custom recipe">🗑️</button>
+                                        )}
+                                        <button className={`recipe-select-btn ${isSelected ? 'selected' : ''}`} onClick={(e) => { e.stopPropagation(); toggleRecipeForWeek(recipe); }} title={isSelected ? "Remove from this week" : "Add to this week"} />
+                                        <div className="recipe-card-clickable" onClick={() => { setViewingRecipe(recipe); setModalServings(recipe.servings); }}>
+                                            <div className="recipe-image"><span>{recipe.emoji}</span></div>
+                                            <div className="recipe-content">
+                                                <h3 className="recipe-title">{recipe.name}{recipe.isCustom && <span className="custom-recipe-badge">CUSTOM</span>}</h3>
+                                                <p className="recipe-origin">{recipe.origin}</p>
+                                                <div className="nutrition-tags">
+                                                    <span className="nutrition-tag">{recipe.nutrition.calories} cal</span>
+                                                    <span className="nutrition-tag protein">{recipe.nutrition.protein}g protein</span>
+                                                    <span className="nutrition-tag fiber">{recipe.nutrition.fiber}g fiber</span>
+                                                </div>
+                                                <p className="serving-size">Per {recipe.servingSize} • {recipe.servings} servings</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        {activeTab === 'recipes' && (
+                            <button className="create-recipe-btn" onClick={() => setShowCreateRecipe(true)} title="Create custom recipe">+</button>
+                        )}
+                    </div>
+
+                    {/* MEAL PLANNER TAB */}
+                    <div className={`tab-content ${activeTab === 'planner' ? 'active' : ''}`}>
+                        {weekSelectorUI('Viewing week:')}
+                        <div className="planner-header">
+                            <h2 style={{fontFamily: 'Crimson Pro', fontSize: '2rem', color: 'var(--forest-dark)'}}>Weekly Meal Plan</h2>
+                            <div className="planner-stats">
+                                <div className="stat-card"><div className="stat-value">{getSelectedWeekRecipes().length}</div><div className="stat-label">Meals Selected</div></div>
+                                <div className="stat-card"><div className="stat-value">4</div><div className="stat-label">People</div></div>
+                                <div className="stat-card"><div className="stat-value">1 cup</div><div className="stat-label">Per Serving</div></div>
+                            </div>
+                        </div>
+                        {getSelectedWeekRecipes().length > 0 ? (
+                            <div className="selected-meals">
+                                <h3 style={{fontFamily: 'Crimson Pro', fontSize: '1.5rem', marginBottom: '16px', color: 'var(--forest-dark)'}}>This Week's Meals</h3>
+                                {getSelectedWeekRecipes().map(recipe => {
+                                    const currentServings = getServingOverride(recipe);
+                                    return (
+                                    <div key={recipe.id} className="meal-slot">
+                                        <div style={{flex: 1}}>
+                                            <span className="meal-name">{recipe.emoji} {recipe.name}</span>
+                                            <div style={{fontSize: '0.85rem', color: 'var(--warm-gray)', marginTop: '4px'}}>
+                                                {recipe.nutrition.calories} cal • {recipe.nutrition.protein}g protein • {recipe.nutrition.fiber}g fiber per serving
+                                            </div>
+                                            {/* Serving adjuster */}
+                                            <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px'}}>
+                                                <span style={{fontSize: '0.85rem', color: 'var(--forest-dark)', fontWeight: 600}}>Servings:</span>
+                                                <button onClick={() => setServingOverride(recipe, Math.max(1, currentServings - 1))}
+                                                    style={{width: 28, height: 28, borderRadius: '50%', border: '2px solid var(--mint)',
+                                                        background: 'var(--white)', fontSize: '1.1rem', cursor: 'pointer',
+                                                        color: 'var(--forest-dark)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight: 700}}>−</button>
+                                                <span style={{fontSize: '1rem', fontWeight: 700, color: 'var(--forest-dark)', minWidth: 24, textAlign: 'center'}}>
+                                                    {currentServings}
+                                                </span>
+                                                <button onClick={() => setServingOverride(recipe, currentServings + 1)}
+                                                    style={{width: 28, height: 28, borderRadius: '50%', border: '2px solid var(--mint)',
+                                                        background: 'var(--white)', fontSize: '1.1rem', cursor: 'pointer',
+                                                        color: 'var(--forest-dark)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight: 700}}>+</button>
+                                                {currentServings !== recipe.servings && (
+                                                    <button onClick={() => setServingOverride(recipe, recipe.servings)}
+                                                        style={{fontSize: '0.75rem', color: 'var(--sage)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline'}}>
+                                                        Reset ({recipe.servings})
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <button className="remove-btn" onClick={() => toggleRecipeForWeek(recipe)}>Remove</button>
+                                    </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <div style={{textAlign: 'center', padding: '60px 20px', background: 'var(--white)', borderRadius: 'var(--radius-md)'}}>
+                                <p style={{fontSize: '1.2rem', color: 'var(--warm-gray)'}}>No meals selected for this week. Go to Recipes tab to add meals.</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* SHOPPING LIST TAB */}
+                    <div className={`tab-content ${activeTab === 'shopping' ? 'active' : ''}`}>
+                        {weekSelectorUI('Shopping for:')}
+                        <div className="shopping-section">
+                            <h2 style={{fontFamily: 'Crimson Pro', fontSize: '2rem', marginBottom: '8px', color: 'var(--forest-dark)'}}>Shopping List</h2>
+                            <p style={{color: 'var(--warm-gray)', marginBottom: '24px', fontSize: '0.95rem'}}>
+                                Ingredients are calculated based on the servings set in your Meal Planner. Adjust servings there to update this list.
+                            </p>
+                            {getSelectedWeekRecipes().length > 0 ? (
+                                <>
+                                    <div className="share-actions">
+                                        <button className="btn-secondary" onClick={() => handleShareClick('email')}>📧 Email List</button>
+                                        <button className="btn-secondary" onClick={() => handleShareClick('sms')}>💬 Text List</button>
+                                    </div>
+                                    {Object.entries(generateShoppingList()).map(([category, items]) => items.length > 0 && (
+                                        <div key={category} className="shopping-category">
+                                            <h3 className="category-title">{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+                                            <ul className="ingredient-list">
+                                                {items.map((item, idx) => (
+                                                    <li key={idx} className="ingredient-item">
+                                                        <label style={{display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', flex: 1}}>
+                                                            <input type="checkbox" data-category={category} data-index={idx}
+                                                                onChange={(e) => e.target.parentElement.parentElement.classList.toggle('checked')} />
+                                                            <span>{item}</span>
+                                                        </label>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ))}
+                                </>
+                            ) : (
+                                <div style={{textAlign: 'center', padding: '60px 20px'}}>
+                                    <p style={{fontSize: '1.2rem', color: 'var(--warm-gray)'}}>Plan meals for the week in the Meal Planner to generate a shopping list</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* FOOD LOGGER TAB */}
+                    <div className={`tab-content ${activeTab === 'logger' ? 'active' : ''}`}>
+                        <div className="logger-section">
+                            <h2 style={{fontFamily: 'Crimson Pro', fontSize: '2rem', marginBottom: '24px', color: 'var(--forest-dark)'}}>Daily Food Logger</h2>
+                            {weekSelectorUI('Tracking week:')}
+
+                            {/* Monthly Chart */}
+                            <div className="monthly-chart">
+                                <div className="chart-header">
+                                    <h3 className="chart-title">Monthly Macro Tracking</h3>
+                                    <div className="month-nav">
+                                        <button onClick={() => changeMonth(-1)}>←</button>
+                                        <span className="month-label">{chartMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                                        <button onClick={() => changeMonth(1)}>→</button>
+                                    </div>
+                                </div>
+                                <div className="chart-canvas">
+                                    <svg className="chart-svg" viewBox="0 0 800 250" preserveAspectRatio="xMidYMid meet">
+                                        <line x1="40" y1="200" x2="760" y2="200" stroke="#e8f5e9" strokeWidth="1"/>
+                                        <line x1="40" y1="150" x2="760" y2="150" stroke="#e8f5e9" strokeWidth="1"/>
+                                        <line x1="40" y1="100" x2="760" y2="100" stroke="#e8f5e9" strokeWidth="1"/>
+                                        <line x1="40" y1="50" x2="760" y2="50" stroke="#e8f5e9" strokeWidth="1"/>
+                                        <line x1="40" y1="10" x2="40" y2="200" stroke="#6b6b6b" strokeWidth="2"/>
+                                        <line x1="40" y1="200" x2="760" y2="200" stroke="#6b6b6b" strokeWidth="2"/>
+                                        {monthlyData.length > 1 && (
+                                            <>
+                                                <polyline fill="none" stroke="#f39c12" strokeWidth="2"
+                                                    points={monthlyData.map((d, i) => `${40 + (i / (monthlyData.length - 1)) * 720},${Math.max(10, 200 - (d.protein / DAILY_GOALS.protein) * 190)}`).join(' ')} />
+                                                <polyline fill="none" stroke="#4d9b6b" strokeWidth="2"
+                                                    points={monthlyData.map((d, i) => `${40 + (i / (monthlyData.length - 1)) * 720},${Math.max(10, 200 - (d.fiber / DAILY_GOALS.fiber) * 190)}`).join(' ')} />
+                                                <polyline fill="none" stroke="#e74c3c" strokeWidth="2"
+                                                    points={monthlyData.map((d, i) => `${40 + (i / (monthlyData.length - 1)) * 720},${Math.max(10, 200 - (d.fat / DAILY_GOALS.fat) * 190)}`).join(' ')} />
+                                                <polyline fill="none" stroke="#8b5cf6" strokeWidth="2"
+                                                    points={monthlyData.map((d, i) => `${40 + (i / (monthlyData.length - 1)) * 720},${Math.max(10, 200 - (d.calories / DAILY_GOALS.calories) * 190)}`).join(' ')} />
+                                            </>
+                                        )}
+                                        <text x="10" y="205" fontSize="12" fill="#6b6b6b">0%</text>
+                                        <text x="5" y="155" fontSize="12" fill="#6b6b6b">50%</text>
+                                        <text x="0" y="105" fontSize="12" fill="#6b6b6b">100%</text>
+                                    </svg>
+                                </div>
+                                <div className="chart-legend">
+                                    <div className="legend-item"><div className="legend-color" style={{background: '#8b5cf6'}}></div><span>Calories (Goal: {DAILY_GOALS.calories})</span></div>
+                                    <div className="legend-item"><div className="legend-color" style={{background: '#f39c12'}}></div><span>Protein (Goal: {DAILY_GOALS.protein}g)</span></div>
+                                    <div className="legend-item"><div className="legend-color" style={{background: '#4d9b6b'}}></div><span>Fiber (Goal: {DAILY_GOALS.fiber}g)</span></div>
+                                    <div className="legend-item"><div className="legend-color" style={{background: '#e74c3c'}}></div><span>Fat (Goal: {DAILY_GOALS.fat}g)</span></div>
+                                </div>
+                            </div>
+
+                            <div className="date-selector">
+                                <label htmlFor="log-date">Date:</label>
+                                <input type="date" id="log-date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
+                                <span style={{color: 'var(--warm-gray)', marginLeft: '12px'}}>{formatDate(selectedDate)}</span>
+                            </div>
+
+                            <div className="daily-goals">
+                                {[
+                                    {label: 'cal', value: totals.calories, goal: DAILY_GOALS.calories, unit: ''},
+                                    {label: 'protein', value: totals.protein, goal: DAILY_GOALS.protein, unit: 'g'},
+                                    {label: 'fiber', value: totals.fiber, goal: DAILY_GOALS.fiber, unit: 'g'},
+                                    {label: 'fat', value: totals.fat, goal: DAILY_GOALS.fat, unit: 'g'},
+                                ].map(({label, value, goal, unit}) => (
+                                    <div key={label} className="goal-card">
+                                        <div className="goal-progress">{value}{unit}</div>
+                                        <div className="goal-target">/ {goal} {label}</div>
+                                        <div className="progress-bar"><div className="progress-fill" style={{width: `${Math.min((value / goal) * 100, 100)}%`}}></div></div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="log-entry-form">
+                                <h3 style={{fontFamily: 'Crimson Pro', fontSize: '1.5rem', marginBottom: '16px', color: 'var(--forest-dark)'}}>Log Food</h3>
+                                <div className="log-type-tabs">
+                                    <button className={`log-type-tab ${logType === 'recipe' ? 'active' : ''}`} onClick={() => setLogType('recipe')}>Recipe</button>
+                                    <button className={`log-type-tab ${logType === 'ingredient' ? 'active' : ''}`} onClick={() => setLogType('ingredient')}>Items</button>
+                                </div>
+
+                                {logType === 'recipe' ? (
+                                    <form onSubmit={logMeal}>
+                                        <div className="form-group">
+                                            <label>Recipe</label>
+                                            <select value={currentMeal.recipe} onChange={(e) => setCurrentMeal({...currentMeal, recipe: e.target.value})} required>
+                                                <option value="">Select a recipe...</option>
+                                                {getSelectedWeekRecipes().length > 0
+                                                    ? getSelectedWeekRecipes().map(r => <option key={r.id} value={r.id}>{r.emoji} {r.name}</option>)
+                                                    : <option value="" disabled>No recipes selected for this week</option>
+                                                }
+                                            </select>
+                                            {getSelectedWeekRecipes().length === 0 && (
+                                                <p style={{fontSize: '0.85rem', color: 'var(--warm-gray)', marginTop: '8px'}}>Go to Recipes tab to add meals for this week</p>
+                                            )}
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Portions (cups)</label>
+                                            <input type="number" min="0.5" max="5" step="0.5" value={currentMeal.portions} onChange={(e) => setCurrentMeal({...currentMeal, portions: e.target.value})} required />
+                                        </div>
+                                        <button type="submit" className="btn-primary">Log Recipe</button>
+                                    </form>
+                                ) : (
+                                    <form onSubmit={logIngredient}>
+                                        <div className="form-group">
+                                            <label>Search Item</label>
+                                            <div className="ingredient-search">
+                                                <input type="text" className="search-input" placeholder="Type to search (e.g., broccoli, chickpeas, cake)..."
+                                                    value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                                                {searchQuery && filteredIngredients.length > 0 && (
+                                                    <div className="ingredient-dropdown">
+                                                        {filteredIngredients.slice(0, 8).map(ingredient => (
+                                                            <div key={ingredient.name} className="ingredient-option" onClick={() => { setSelectedIngredient(ingredient); setSearchQuery(''); }}>
+                                                                <div className="ingredient-option-name">{ingredient.name}</div>
+                                                                <div className="ingredient-option-details">{ingredient.category} • {ingredient.perCup.calories} cal • {ingredient.perCup.protein}g protein • {ingredient.perCup.fiber}g fiber per cup</div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        {selectedIngredient && (
+                                            <div className="selected-ingredient-card">
+                                                <div className="selected-ingredient-name">{selectedIngredient.name}</div>
+                                                <div className="selected-ingredient-nutrition">
+                                                    <span>{selectedIngredient.perCup.calories} cal</span>
+                                                    <span>{selectedIngredient.perCup.protein}g protein</span>
+                                                    <span>{selectedIngredient.perCup.fiber}g fiber</span>
+                                                    <span>{selectedIngredient.category}</span>
+                                                </div>
+                                                <button type="button" className="clear-selection-btn" onClick={() => setSelectedIngredient(null)}>Clear Selection</button>
+                                            </div>
+                                        )}
+                                        <div className="form-group">
+                                            <label>Portions</label>
+                                            <input type="number" min="0.25" max="10" step="0.25" value={ingredientPortion} onChange={(e) => setIngredientPortion(e.target.value)} required />
+                                            <p style={{fontSize: '0.85rem', color: 'var(--warm-gray)', marginTop: '4px'}}>1.0 = standard serving, 0.5 = half serving, 2.0 = double serving</p>
+                                        </div>
+                                        <button type="submit" className="btn-primary">Log Item</button>
+                                    </form>
+                                )}
+                            </div>
+
+                            {todaysMeals.length > 0 && (
+                                <div className="logged-meals">
+                                    <h3 style={{fontFamily: 'Crimson Pro', fontSize: '1.5rem', marginBottom: '16px', color: 'var(--forest-dark)'}}>Meals for {formatDate(selectedDate)}</h3>
+                                    {todaysMeals.map(meal => (
+                                        <div key={meal.id} className="logged-meal">
+                                            <div className="meal-info">
+                                                <div className="meal-time">{meal.time}</div>
+                                                <div className="meal-details">
+                                                    {meal.recipe} ({meal.portions} {meal.servingUnit || 'serving'}{meal.portions !== 1 ? 's' : ''})
+                                                    {meal.isIngredient && <span style={{fontSize: '0.8rem', color: 'var(--sage)', marginLeft: '8px'}}>• item</span>}
+                                                </div>
+                                                <div style={{fontSize: '0.85rem', color: 'var(--warm-gray)', marginTop: '4px'}}>
+                                                    {meal.nutrition.calories} cal • {meal.nutrition.protein}g protein • {meal.nutrition.fiber}g fiber • {meal.nutrition.fat || 0}g fat
+                                                </div>
+                                            </div>
+                                            <button className="remove-btn" onClick={() => setLoggedMeals(loggedMeals.filter(m => m.id !== meal.id))}>Delete</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Share Modal */}
+                    {showShareModal && (
+                        <div className="share-modal show" onClick={() => setShowShareModal(false)}>
+                            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                                <h2 className="modal-header">{shareMethod === 'email' ? '📧 Email Shopping List' : '💬 Text Shopping List'}</h2>
+                                <div className="form-group">
+                                    <label>{shareMethod === 'email' ? 'Email Address' : 'Phone Number'}</label>
+                                    <input type={shareMethod === 'email' ? 'email' : 'tel'} value={shareInput}
+                                        onChange={(e) => setShareInput(e.target.value)}
+                                        placeholder={shareMethod === 'email' ? 'name@example.com' : '(555) 123-4567'}
+                                        style={{width: '100%'}} autoFocus />
+                                </div>
+                                <div className="modal-buttons">
+                                    <button className="btn-cancel" onClick={() => setShowShareModal(false)}>Cancel</button>
+                                    <button className="btn-confirm" onClick={confirmShare}>Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Recipe Detail Modal */}
+                    {viewingRecipe && (() => {
+                        const currentServings = modalServings || viewingRecipe.servings;
+                        const scaleFactor = currentServings / viewingRecipe.servings;
+                        const scaledNutrition = {
+                            calories: Math.round(viewingRecipe.nutrition.calories * scaleFactor),
+                            protein: Math.round(viewingRecipe.nutrition.protein * scaleFactor),
+                            fiber: Math.round(viewingRecipe.nutrition.fiber * scaleFactor),
+                            carbs: Math.round(viewingRecipe.nutrition.carbs * scaleFactor),
+                            fat: Math.round(viewingRecipe.nutrition.fat * scaleFactor),
+                        };
+                        return (
+                        <div className="recipe-modal show" onClick={() => setViewingRecipe(null)}>
+                            <div className="recipe-modal-content" onClick={(e) => e.stopPropagation()}>
+                                <div className="recipe-modal-header">
+                                    <button className="close-modal-btn" onClick={() => setViewingRecipe(null)}>×</button>
+                                    <span className="recipe-modal-emoji">{viewingRecipe.emoji}</span>
+                                    <h2 className="recipe-modal-title">{viewingRecipe.name}</h2>
+                                    <p className="recipe-modal-origin">{viewingRecipe.origin}</p>
+                                </div>
+                                <div className="recipe-modal-body">
+
+                                    {/* Servings Adjuster */}
+                                    <div style={{
+                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                        background: 'var(--cream)', borderRadius: 'var(--radius-md)',
+                                        padding: '16px 20px', marginBottom: '24px'
+                                    }}>
+                                        <div>
+                                            <div style={{fontWeight: 700, color: 'var(--forest-dark)', fontSize: '1rem'}}>Servings</div>
+                                            <div style={{fontSize: '0.85rem', color: 'var(--warm-gray)'}}>1 serving = {viewingRecipe.servingSize}</div>
+                                        </div>
+                                        <div style={{display: 'flex', alignItems: 'center', gap: '14px'}}>
+                                            <button onClick={() => setModalServings(Math.max(1, currentServings - 1))}
+                                                style={{width: 36, height: 36, borderRadius: '50%', border: '2px solid var(--mint)',
+                                                    background: 'var(--white)', fontSize: '1.3rem', cursor: 'pointer',
+                                                    color: 'var(--forest-dark)', display:'flex', alignItems:'center', justifyContent:'center',
+                                                    fontWeight: 700, transition: 'all 0.2s'}}>−</button>
+                                            <span style={{fontSize: '1.5rem', fontWeight: 700, color: 'var(--forest-dark)', minWidth: 32, textAlign: 'center'}}>
+                                                {currentServings}
+                                            </span>
+                                            <button onClick={() => setModalServings(currentServings + 1)}
+                                                style={{width: 36, height: 36, borderRadius: '50%', border: '2px solid var(--mint)',
+                                                    background: 'var(--white)', fontSize: '1.3rem', cursor: 'pointer',
+                                                    color: 'var(--forest-dark)', display:'flex', alignItems:'center', justifyContent:'center',
+                                                    fontWeight: 700, transition: 'all 0.2s'}}>+</button>
+                                        </div>
+                                        {currentServings !== viewingRecipe.servings && (
+                                            <button onClick={() => setModalServings(viewingRecipe.servings)}
+                                                style={{fontSize: '0.8rem', color: 'var(--sage)', background: 'none',
+                                                    border: 'none', cursor: 'pointer', textDecoration: 'underline'}}>
+                                                Reset
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <div className="recipe-section">
+                                        <h3 className="recipe-section-title">
+                                            Nutrition {currentServings !== viewingRecipe.servings ? `(${currentServings} servings total)` : 'Per Serving'}
+                                        </h3>
+                                        {currentServings !== viewingRecipe.servings && (
+                                            <p style={{color: 'var(--forest-medium)', marginBottom: '12px', fontSize: '0.9rem', fontWeight: 600}}>
+                                                📐 Scaled from {viewingRecipe.servings} → {currentServings} servings
+                                            </p>
+                                        )}
+                                        <div className="nutrition-grid">
+                                            {[
+                                                {value: currentServings === viewingRecipe.servings ? viewingRecipe.nutrition.calories : scaledNutrition.calories, label: 'Calories'},
+                                                {value: `${currentServings === viewingRecipe.servings ? viewingRecipe.nutrition.protein : scaledNutrition.protein}g`, label: 'Protein'},
+                                                {value: `${currentServings === viewingRecipe.servings ? viewingRecipe.nutrition.fiber : scaledNutrition.fiber}g`, label: 'Fiber'},
+                                                {value: `${currentServings === viewingRecipe.servings ? viewingRecipe.nutrition.carbs : scaledNutrition.carbs}g`, label: 'Carbs'},
+                                                {value: `${currentServings === viewingRecipe.servings ? viewingRecipe.nutrition.fat : scaledNutrition.fat}g`, label: 'Fat'},
+                                            ].map(({value, label}) => (
+                                                <div key={label} className="nutrition-item">
+                                                    <div className="nutrition-value">{value}</div>
+                                                    <div className="nutrition-label">{label}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="recipe-section">
+                                        <h3 className="recipe-section-title">
+                                            Ingredients
+                                            {currentServings !== viewingRecipe.servings && (
+                                                <span style={{fontSize: '0.85rem', fontWeight: 400, color: 'var(--forest-medium)', marginLeft: 8}}>
+                                                    (adjusted for {currentServings} servings)
+                                                </span>
+                                            )}
+                                        </h3>
+                                        {Object.entries(viewingRecipe.ingredients).map(([category, items]) => (
+                                            <div key={category} className="ingredients-category">
+                                                <div className="ingredients-category-name">{category}</div>
+                                                <ul className="ingredients-list">
+                                                    {items.map((item, idx) => (
+                                                        <li key={idx}>{scaleIngredient(item, viewingRecipe.servings, currentServings)}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="recipe-actions">
+                                        {viewingRecipe.isCustom && (
+                                            <button className="export-recipe-btn" onClick={() => exportRecipe(viewingRecipe)}>💾 Save Recipe</button>
+                                        )}
+                                        <button className={`select-recipe-btn ${isRecipeSelectedForWeek(viewingRecipe) ? 'selected' : ''}`} style={{flex: 1}}
+                                            onClick={(e) => { e.stopPropagation(); toggleRecipeForWeek(viewingRecipe); }}>
+                                            {isRecipeSelectedForWeek(viewingRecipe) ? 'Selected for This Week' : 'Add to This Week'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        );
+                    })()}
+
+                    {/* Create Recipe Modal */}
+                    {showCreateRecipe && (
+                        <div className="create-recipe-modal show" onClick={() => setShowCreateRecipe(false)}>
+                            <div className="create-recipe-content" onClick={(e) => e.stopPropagation()}>
+                                <div className="recipe-builder-header">
+                                    <h2 className="recipe-builder-title">Create Custom Recipe</h2>
+                                    <button className="close-modal-btn" style={{position: 'relative', top: 0, right: 0}} onClick={() => setShowCreateRecipe(false)}>×</button>
+                                </div>
+                                <div className="form-group">
+                                    <label>Recipe Name</label>
+                                    <input type="text" className="search-input" placeholder="e.g., My Buddha Bowl"
+                                        value={newRecipe.name} onChange={(e) => setNewRecipe({...newRecipe, name: e.target.value})} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Choose Emoji</label>
+                                    <div className="emoji-picker">
+                                        {['🥗', '🥙', '🍲', '🍜', '🍛', '🥘', '🍝', '🥣', '🍱', '🍽️'].map(emoji => (
+                                            <span key={emoji} className={`emoji-option ${newRecipe.emoji === emoji ? 'selected' : ''}`} onClick={() => setNewRecipe({...newRecipe, emoji})}>{emoji}</span>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label>Number of Servings</label>
+                                    <input type="number" className="small-input" min="1" max="12" value={newRecipe.servings}
+                                        onChange={(e) => setNewRecipe({...newRecipe, servings: e.target.value})} />
+                                </div>
+                                <div className="add-ingredient-section">
+                                    <label>Add Ingredients</label>
+                                    <div className="ingredient-search">
+                                        <input type="text" className="search-input" placeholder="Search ingredients..."
+                                            value={recipeSearchQuery} onChange={(e) => setRecipeSearchQuery(e.target.value)} />
+                                        {recipeSearchQuery && recipeFilteredIngredients.length > 0 && (
+                                            <div className="ingredient-dropdown">
+                                                {recipeFilteredIngredients.slice(0, 6).map(ingredient => (
+                                                    <div key={ingredient.name} className="ingredient-option" onClick={() => addIngredientToRecipe(ingredient)}>
+                                                        <div className="ingredient-option-name">{ingredient.name}</div>
+                                                        <div className="ingredient-option-details">{ingredient.perCup.calories} cal • {ingredient.perCup.protein}g protein per cup</div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                        {recipeSearchQuery && recipeFilteredIngredients.length === 0 && (
+                                            <button className="add-custom-ingredient-btn" type="button" onClick={openCustomIngredientForm}>
+                                                + Add "{recipeSearchQuery}" as custom ingredient
+                                            </button>
+                                        )}
+                                    </div>
+                                    {!showAddCustomIngredient && (
+                                        <div className="add-ingredient-controls">
+                                            <input type="number" className="small-input" min="0.25" max="10" step="0.25"
+                                                value={recipeIngredientPortion} onChange={(e) => setRecipeIngredientPortion(e.target.value || 0.25)} />
+                                            <span style={{fontSize: '0.9rem', color: 'var(--warm-gray)'}}>cups</span>
+                                        </div>
+                                    )}
+                                    {showAddCustomIngredient && (
+                                        <div className="custom-ingredient-form">
+                                            <h4>Add Custom Ingredient</h4>
+                                            <div className="form-group">
+                                                <label>Ingredient Name</label>
+                                                <input type="text" className="search-input" value={customIngredient.name}
+                                                    onChange={(e) => setCustomIngredient({...customIngredient, name: e.target.value})} />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Category</label>
+                                                <select className="search-input" value={customIngredient.category}
+                                                    onChange={(e) => setCustomIngredient({...customIngredient, category: e.target.value})}>
+                                                    {['Vegetables','Fruits','Protein','Grains','Nuts & Seeds','Fats','Other'].map(c => <option key={c} value={c}>{c}</option>)}
+                                                </select>
+                                            </div>
+                                            <label style={{marginBottom: '8px', display: 'block'}}>Nutrition per 1 cup</label>
+                                            <div className="nutrition-inputs">
+                                                {[['calories','Calories'],['protein','Protein (g)'],['fiber','Fiber (g)'],['carbs','Carbs (g)'],['fat','Fat (g)']].map(([key, label]) => (
+                                                    <div key={key} className="form-group">
+                                                        <label>{label}</label>
+                                                        <input type="number" className="small-input" min="0" value={customIngredient[key]}
+                                                            onChange={(e) => setCustomIngredient({...customIngredient, [key]: e.target.value})} />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className="custom-ing-actions">
+                                                <button type="button" className="btn-cancel" style={{flex: 1}} onClick={() => { setShowAddCustomIngredient(false); setRecipeSearchQuery(''); }}>Cancel</button>
+                                                <button type="button" className="btn-primary" style={{flex: 1}} onClick={saveCustomIngredient}>Add to Recipe</button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                {newRecipe.ingredients.length > 0 && (
+                                    <div className="ingredient-builder-list">
+                                        <label>Ingredients ({newRecipe.ingredients.length})</label>
+                                        {newRecipe.ingredients.map((ing, idx) => (
+                                            <div key={idx} className="builder-ingredient-item">
+                                                <div className="builder-ingredient-info">
+                                                    <div className="builder-ingredient-name">{ing.name}</div>
+                                                    <div className="builder-ingredient-amount">{ing.portions} cup{ing.portions !== 1 ? 's' : ''} • {Math.round(ing.perCup.calories * ing.portions)} cal • {Math.round(ing.perCup.protein * ing.portions)}g protein</div>
+                                                </div>
+                                                <button className="remove-btn" onClick={() => removeIngredientFromRecipe(idx)}>Remove</button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                {newRecipe.ingredients.length > 0 && (
+                                    <div className="nutrition-preview">
+                                        <div className="nutrition-preview-title">Nutrition per Serving (1 cup)</div>
+                                        <div className="nutrition-preview-grid">
+                                            {Object.entries(calculateRecipeNutrition()).map(([key, val]) => (
+                                                <div key={key} className="nutrition-preview-item">
+                                                    <div className="nutrition-preview-value">{val}{key !== 'calories' ? 'g' : ''}</div>
+                                                    <div className="nutrition-preview-label">{key.charAt(0).toUpperCase() + key.slice(1)}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="recipe-builder-actions">
+                                    <button className="btn-cancel" style={{flex: 1}} onClick={() => setShowCreateRecipe(false)}>Cancel</button>
+                                    <button className="btn-primary" style={{flex: 1}} onClick={saveCustomRecipe}>Save Recipe</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    self.addEventListener('install', (e) => {
+                        e.waitUntil(
+                            caches.open('fresh-prep-v1').then((cache) => {
+                                return cache.addAll([
+                                    self.location.pathname.replace('sw.js', ''),
+                                    self.location.pathname.replace('sw.js', 'index.html')
+                                ]).catch(() => {});
+                            })
+                        );
+                    });
+                    self.addEventListener('fetch', (e) => {
+                        e.respondWith(
+                            caches.match(e.request).then((response) => response || fetch(e.request).catch(() => caches.match('index.html')))
+                        );
+                    });
+                `;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(blob));
+            });
+        }
+    </script>
+</body>
+</html>
