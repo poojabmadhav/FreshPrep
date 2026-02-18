@@ -1513,9 +1513,15 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
+
+        // --- Supabase setup ---
+        const SUPABASE_URL = 'https://zdypuakbxspxunyikjet.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkeXB1YWtieHNweHVueWlramV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNjc2OTksImV4cCI6MjA4Njk0MzY5OX0.T7hEml3d62MjilNwP7reu7wlqguBCLuzgXRQWbvxNyU';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         function getWeekStart(date) {
             const d = new Date(date);
@@ -1725,7 +1731,7 @@
             const [shareInput, setShareInput] = useState('');
             const [viewingRecipe, setViewingRecipe] = useState(null);
             const [modalServings, setModalServings] = useState(null);
-            const [weeklyServingOverrides, setWeeklyServingOverrides] = useState({}); // {weekKey: {recipeId: servings}}
+            const [weeklyServingOverrides, setWeeklyServingOverrides] = useState({});
             const [searchQuery, setSearchQuery] = useState('');
             const [selectedIngredient, setSelectedIngredient] = useState(null);
             const [ingredientPortion, setIngredientPortion] = useState(1);
@@ -1741,25 +1747,157 @@
             const [selectedWeek, setSelectedWeek] = useState(getWeekStart(new Date()));
             const [weeklyMealSelections, setWeeklyMealSelections] = useState({});
 
+            // --- Onboarding / household state ---
+            const [currentUser, setCurrentUser] = useState(null);       // { id, name, household_id }
+            const [currentHousehold, setCurrentHousehold] = useState(null); // { id, name, join_code }
+            const [onboardingStep, setOnboardingStep] = useState('loading'); // loading | join | app
+            const [onboardingName, setOnboardingName] = useState('');
+            const [onboardingMode, setOnboardingMode] = useState(''); // 'create' | 'join'
+            const [householdName, setHouseholdName] = useState('');
+            const [joinCode, setJoinCode] = useState('');
+            const [onboardingError, setOnboardingError] = useState('');
+            const [onboardingLoading, setOnboardingLoading] = useState(false);
+            const [dbLoading, setDbLoading] = useState(false);
+
+            // --- On mount: check localStorage for saved user, then load from Supabase ---
             useEffect(() => {
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
                     setDeferredPrompt(e);
                     setShowInstallPrompt(true);
                 });
-                const saved = localStorage.getItem('mealPrepData');
-                if (saved) {
-                    const data = JSON.parse(saved);
-                    setLoggedMeals(data.loggedMeals || []);
-                    setCustomRecipes(data.customRecipes || []);
-                    setWeeklyMealSelections(data.weeklyMealSelections || {});
-                    setWeeklyServingOverrides(data.weeklyServingOverrides || {});
+
+                const savedUser = localStorage.getItem('freshPrepUser');
+                if (savedUser) {
+                    const user = JSON.parse(savedUser);
+                    setCurrentUser(user);
+                    loadHouseholdData(user);
+                } else {
+                    setOnboardingStep('join');
                 }
             }, []);
 
-            useEffect(() => {
-                localStorage.setItem('mealPrepData', JSON.stringify({ loggedMeals, customRecipes, weeklyMealSelections, weeklyServingOverrides }));
-            }, [loggedMeals, customRecipes, weeklyMealSelections, weeklyServingOverrides]);
+            const loadHouseholdData = async (user) => {
+                setDbLoading(true);
+                try {
+                    // Set user context for RLS
+                    await supabase.rpc('set_config', { key: 'app.user_id', value: String(user.id) }).maybeSingle();
+
+                    // Load household
+                    const { data: household } = await supabase
+                        .from('households').select('*').eq('id', user.household_id).single();
+                    setCurrentHousehold(household);
+
+                    // Load custom recipes (visible to all)
+                    const { data: recipes } = await supabase
+                        .from('custom_recipes').select('id, name, emoji, servings, nutrition, ingredients');
+                    setCustomRecipes((recipes || []).map(r => ({ ...r, isCustom: true })));
+
+                    // Load weekly plans for this household
+                    const { data: plans } = await supabase
+                        .from('weekly_plans').select('*').eq('household_id', user.household_id);
+                    const selectionsMap = {};
+                    const overridesMap = {};
+                    (plans || []).forEach(plan => {
+                        selectionsMap[plan.week_start] = plan.recipe_selections || [];
+                        overridesMap[plan.week_start] = plan.serving_overrides || {};
+                    });
+                    setWeeklyMealSelections(selectionsMap);
+                    setWeeklyServingOverrides(overridesMap);
+
+                    // Load meal logs for this user
+                    const { data: logs } = await supabase
+                        .from('meal_logs').select('*').eq('user_id', user.id);
+                    setLoggedMeals(logs || []);
+
+                    setOnboardingStep('app');
+                } catch (err) {
+                    console.error('Error loading data:', err);
+                    setOnboardingStep('app'); // still show app, just with empty data
+                } finally {
+                    setDbLoading(false);
+                }
+            };
+
+            // --- Save weekly plan to Supabase ---
+            const saveWeeklyPlan = async (weekKey, selections, overrides) => {
+                if (!currentUser) return;
+                await supabase.from('weekly_plans').upsert({
+                    household_id: currentUser.household_id,
+                    week_start: weekKey,
+                    recipe_selections: selections,
+                    serving_overrides: overrides
+                }, { onConflict: 'household_id,week_start' });
+            };
+
+            // --- Save meal log to Supabase ---
+            const saveMealLog = async (logEntry) => {
+                if (!currentUser) return;
+                await supabase.from('meal_logs').insert({ ...logEntry, user_id: currentUser.id });
+            };
+
+            // --- Delete meal log from Supabase ---
+            const deleteMealLog = async (id) => {
+                await supabase.from('meal_logs').delete().eq('id', id);
+                setLoggedMeals(loggedMeals.filter(m => m.id !== id));
+            };
+
+            // --- Onboarding: Create household ---
+            const createHousehold = async () => {
+                if (!onboardingName.trim() || !householdName.trim()) {
+                    setOnboardingError('Please enter your name and household name'); return;
+                }
+                setOnboardingLoading(true);
+                setOnboardingError('');
+                try {
+                    const code = householdName.trim().toUpperCase().replace(/\s+/g, '-') + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+                    const { data: household, error: hErr } = await supabase
+                        .from('households').insert({ name: householdName.trim(), join_code: code }).select().single();
+                    if (hErr) throw hErr;
+
+                    const { data: user, error: uErr } = await supabase
+                        .from('users').insert({ name: onboardingName.trim(), household_id: household.id }).select().single();
+                    if (uErr) throw uErr;
+
+                    localStorage.setItem('freshPrepUser', JSON.stringify(user));
+                    setCurrentUser(user);
+                    setCurrentHousehold(household);
+                    setOnboardingStep('app');
+                } catch (err) {
+                    setOnboardingError('Something went wrong. Please try again.');
+                    console.error(err);
+                } finally {
+                    setOnboardingLoading(false);
+                }
+            };
+
+            // --- Onboarding: Join household ---
+            const joinHousehold = async () => {
+                if (!onboardingName.trim() || !joinCode.trim()) {
+                    setOnboardingError('Please enter your name and household code'); return;
+                }
+                setOnboardingLoading(true);
+                setOnboardingError('');
+                try {
+                    const { data: household, error: hErr } = await supabase
+                        .from('households').select('*').eq('join_code', joinCode.trim().toUpperCase()).single();
+                    if (hErr || !household) { setOnboardingError('Household code not found. Check the code and try again.'); setOnboardingLoading(false); return; }
+
+                    const { data: user, error: uErr } = await supabase
+                        .from('users').insert({ name: onboardingName.trim(), household_id: household.id }).select().single();
+                    if (uErr) throw uErr;
+
+                    localStorage.setItem('freshPrepUser', JSON.stringify(user));
+                    setCurrentUser(user);
+                    setCurrentHousehold(household);
+                    await loadHouseholdData(user);
+                } catch (err) {
+                    setOnboardingError('Something went wrong. Please try again.');
+                    console.error(err);
+                } finally {
+                    setOnboardingLoading(false);
+                }
+            };
 
             const handleInstallClick = () => {
                 if (deferredPrompt) {
@@ -1782,12 +1920,12 @@
                 const weekKey = getWeekKey(selectedWeek);
                 const currentSelections = weeklyMealSelections[weekKey] || [];
                 const exists = currentSelections.find(r => r.id === recipe.id);
-                setWeeklyMealSelections({
-                    ...weeklyMealSelections,
-                    [weekKey]: exists
-                        ? currentSelections.filter(r => r.id !== recipe.id)
-                        : [...currentSelections, recipe]
-                });
+                const newSelections = exists
+                    ? currentSelections.filter(r => r.id !== recipe.id)
+                    : [...currentSelections, recipe];
+                const newSelectionsMap = { ...weeklyMealSelections, [weekKey]: newSelections };
+                setWeeklyMealSelections(newSelectionsMap);
+                saveWeeklyPlan(weekKey, newSelections, weeklyServingOverrides[weekKey] || {});
             };
 
             const isRecipeSelectedForWeek = (recipe) => {
@@ -1813,10 +1951,9 @@
 
             const setServingOverride = (recipe, servings) => {
                 const weekKey = getWeekKey(selectedWeek);
-                setWeeklyServingOverrides({
-                    ...weeklyServingOverrides,
-                    [weekKey]: { ...(weeklyServingOverrides[weekKey] || {}), [recipe.id]: servings }
-                });
+                const newOverrides = { ...(weeklyServingOverrides[weekKey] || {}), [recipe.id]: servings };
+                setWeeklyServingOverrides({ ...weeklyServingOverrides, [weekKey]: newOverrides });
+                saveWeeklyPlan(weekKey, weeklyMealSelections[weekKey] || [], newOverrides);
             };
 
             const generateShoppingList = () => {
@@ -1879,14 +2016,14 @@
                 setShareInput('');
             };
 
-            const logMeal = (e) => {
+            const logMeal = async (e) => {
                 e.preventDefault();
                 if (!currentMeal.recipe) return;
                 const recipe = getSelectedWeekRecipes().find(r => r.id === parseInt(currentMeal.recipe));
                 if (!recipe) { alert('Recipe not found. Please select a recipe from this week\'s meal plan.'); return; }
                 const portions = parseFloat(currentMeal.portions);
                 const logged = {
-                    id: Date.now(), recipe: recipe.name, portions,
+                    recipe: recipe.name, portions,
                     date: selectedDate, time: new Date().toLocaleTimeString(),
                     nutrition: {
                         calories: Math.round(recipe.nutrition.calories * portions),
@@ -1895,11 +2032,12 @@
                         fat: Math.round(recipe.nutrition.fat * portions)
                     }
                 };
-                setLoggedMeals([...loggedMeals, logged]);
+                const { data } = await supabase.from('meal_logs').insert({ ...logged, user_id: currentUser.id }).select().single();
+                setLoggedMeals([...loggedMeals, data || { ...logged, id: Date.now() }]);
                 setCurrentMeal({ recipe: '', portions: 1 });
             };
 
-            const logIngredient = (e) => {
+            const logIngredient = async (e) => {
                 e.preventDefault();
                 let ingredientToLog = selectedIngredient;
                 let servingUnit = 'serving';
@@ -1920,10 +2058,10 @@
                 if (!ingredientToLog) { alert('Please enter an item name or select from the dropdown'); return; }
                 const portions = parseFloat(ingredientPortion);
                 const logged = {
-                    id: Date.now(), recipe: ingredientToLog.name, portions,
+                    recipe: ingredientToLog.name, portions,
                     servingUnit: ingredientToLog.servingUnit || servingUnit,
                     date: selectedDate, time: new Date().toLocaleTimeString(),
-                    isIngredient: true, foundViaAPI: ingredientToLog.foundViaAPI,
+                    isIngredient: true,
                     nutrition: {
                         calories: Math.round(ingredientToLog.perCup.calories * portions),
                         protein: Math.round(ingredientToLog.perCup.protein * portions),
@@ -1931,7 +2069,8 @@
                         fat: Math.round(ingredientToLog.perCup.fat * portions)
                     }
                 };
-                setLoggedMeals([...loggedMeals, logged]);
+                const { data } = await supabase.from('meal_logs').insert({ ...logged, user_id: currentUser.id }).select().single();
+                setLoggedMeals([...loggedMeals, data || { ...logged, id: Date.now() }]);
                 setSelectedIngredient(null);
                 setIngredientPortion(1);
                 setSearchQuery('');
@@ -1999,23 +2138,29 @@
                 };
             };
 
-            const saveCustomRecipe = () => {
+            const saveCustomRecipe = async () => {
                 if (!newRecipe.name || newRecipe.ingredients.length === 0) { alert('Please add a recipe name and at least one ingredient'); return; }
                 const nutrition = calculateRecipeNutrition();
                 const recipe = {
-                    id: Date.now(), name: newRecipe.name, emoji: newRecipe.emoji,
-                    origin: "Custom Recipe", servings: parseInt(newRecipe.servings),
-                    servingSize: "1 cup", nutrition: nutrition,
+                    name: newRecipe.name, emoji: newRecipe.emoji,
+                    servings: parseInt(newRecipe.servings),
+                    nutrition: nutrition,
                     ingredients: { custom: newRecipe.ingredients.map(ing => `${ing.name} (${ing.portions} cup${ing.portions !== 1 ? 's' : ''})`) },
-                    isCustom: true
+                    created_by: currentUser ? currentUser.id : null
                 };
-                setCustomRecipes([...customRecipes, recipe]);
+                const { data, error } = await supabase.from('custom_recipes').insert(recipe).select('id, name, emoji, servings, nutrition, ingredients').single();
+                if (!error && data) {
+                    setCustomRecipes([...customRecipes, { ...data, isCustom: true }]);
+                } else {
+                    alert('Could not save recipe. Please try again.');
+                }
                 setNewRecipe({ name: '', emoji: '🍽️', servings: 4, ingredients: [] });
                 setShowCreateRecipe(false);
             };
 
-            const deleteCustomRecipe = (recipeId) => {
+            const deleteCustomRecipe = async (recipeId) => {
                 if (confirm('Are you sure you want to delete this custom recipe?')) {
+                    await supabase.from('custom_recipes').delete().eq('id', recipeId);
                     setCustomRecipes(customRecipes.filter(r => r.id !== recipeId));
                     setSelectedRecipes(selectedRecipes.filter(r => r.id !== recipeId));
                     if (viewingRecipe && viewingRecipe.id === recipeId) setViewingRecipe(null);
@@ -2092,10 +2237,94 @@
 
             return (
                 <div className="container">
+
+                    {/* LOADING SCREEN */}
+                    {onboardingStep === 'loading' && (
+                        <div style={{textAlign: 'center', padding: '100px 20px'}}>
+                            <div style={{fontSize: '4rem', marginBottom: '16px'}}>🌿</div>
+                            <div style={{fontSize: '1.2rem', color: 'var(--forest-dark)', fontWeight: 600}}>Loading Fresh Prep...</div>
+                        </div>
+                    )}
+
+                    {/* ONBOARDING SCREEN */}
+                    {onboardingStep === 'join' && (
+                        <div style={{maxWidth: 480, margin: '60px auto', padding: '0 20px'}}>
+                            <div style={{textAlign: 'center', marginBottom: '40px'}}>
+                                <h1 className="logo">🌿 Fresh Prep</h1>
+                                <p className="tagline">Wholesome Vegetarian Meal Planning</p>
+                            </div>
+
+                            {!onboardingMode && (
+                                <div style={{background: 'var(--white)', borderRadius: 'var(--radius-lg)', padding: '32px', boxShadow: 'var(--shadow-lg)'}}>
+                                    <h2 style={{fontFamily: 'Crimson Pro', fontSize: '1.8rem', color: 'var(--forest-dark)', marginBottom: '8px', textAlign: 'center'}}>Welcome!</h2>
+                                    <p style={{color: 'var(--warm-gray)', textAlign: 'center', marginBottom: '32px'}}>Get started by creating a new household or joining an existing one.</p>
+                                    <button className="btn-primary" style={{marginBottom: '12px'}} onClick={() => setOnboardingMode('create')}>
+                                        🏠 Create a New Household
+                                    </button>
+                                    <button className="btn-secondary" style={{width: '100%', justifyContent: 'center'}} onClick={() => setOnboardingMode('join')}>
+                                        🔑 Join Existing Household
+                                    </button>
+                                </div>
+                            )}
+
+                            {onboardingMode === 'create' && (
+                                <div style={{background: 'var(--white)', borderRadius: 'var(--radius-lg)', padding: '32px', boxShadow: 'var(--shadow-lg)'}}>
+                                    <h2 style={{fontFamily: 'Crimson Pro', fontSize: '1.8rem', color: 'var(--forest-dark)', marginBottom: '24px'}}>Create Your Household</h2>
+                                    <div className="form-group">
+                                        <label>Your Name</label>
+                                        <input type="text" className="search-input" placeholder="e.g. Pooja" value={onboardingName} onChange={e => setOnboardingName(e.target.value)} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Household Name</label>
+                                        <input type="text" className="search-input" placeholder="e.g. Madhav Family" value={householdName} onChange={e => setHouseholdName(e.target.value)} />
+                                    </div>
+                                    {onboardingError && <p style={{color: 'var(--tomato)', marginBottom: '16px', fontSize: '0.9rem'}}>{onboardingError}</p>}
+                                    <button className="btn-primary" onClick={createHousehold} disabled={onboardingLoading}>
+                                        {onboardingLoading ? 'Creating...' : 'Create Household'}
+                                    </button>
+                                    <button className="btn-cancel" style={{width: '100%', marginTop: '8px'}} onClick={() => { setOnboardingMode(''); setOnboardingError(''); }}>Back</button>
+                                </div>
+                            )}
+
+                            {onboardingMode === 'join' && (
+                                <div style={{background: 'var(--white)', borderRadius: 'var(--radius-lg)', padding: '32px', boxShadow: 'var(--shadow-lg)'}}>
+                                    <h2 style={{fontFamily: 'Crimson Pro', fontSize: '1.8rem', color: 'var(--forest-dark)', marginBottom: '24px'}}>Join a Household</h2>
+                                    <div className="form-group">
+                                        <label>Your Name</label>
+                                        <input type="text" className="search-input" placeholder="e.g. Ravi" value={onboardingName} onChange={e => setOnboardingName(e.target.value)} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Household Code</label>
+                                        <input type="text" className="search-input" placeholder="e.g. MADHAV-FAMILY-AB12" value={joinCode} onChange={e => setJoinCode(e.target.value)} />
+                                        <p style={{fontSize: '0.85rem', color: 'var(--warm-gray)', marginTop: '4px'}}>Ask the person who created the household for this code</p>
+                                    </div>
+                                    {onboardingError && <p style={{color: 'var(--tomato)', marginBottom: '16px', fontSize: '0.9rem'}}>{onboardingError}</p>}
+                                    <button className="btn-primary" onClick={joinHousehold} disabled={onboardingLoading}>
+                                        {onboardingLoading ? 'Joining...' : 'Join Household'}
+                                    </button>
+                                    <button className="btn-cancel" style={{width: '100%', marginTop: '8px'}} onClick={() => { setOnboardingMode(''); setOnboardingError(''); }}>Back</button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* MAIN APP */}
+                    {onboardingStep === 'app' && (<React.Fragment>
                     {showInstallPrompt && (
                         <div className="install-prompt show">
                             <span>📱 Add Fresh Prep to your home screen for easy access!</span>
                             <button className="install-btn" onClick={handleInstallClick}>Install</button>
+                        </div>
+                    )}
+
+                    {/* Household info bar */}
+                    {currentHousehold && (
+                        <div style={{background: 'var(--forest-dark)', color: 'var(--white)', borderRadius: 'var(--radius-md)',
+                            padding: '12px 20px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8}}>
+                            <span style={{fontWeight: 600}}>🏠 {currentHousehold.name}</span>
+                            <span style={{fontSize: '0.85rem', opacity: 0.85}}>
+                                Hi {currentUser?.name}! &nbsp;|&nbsp; Share code: <strong>{currentHousehold.join_code}</strong>
+                            </span>
                         </div>
                     )}
 
@@ -2395,7 +2624,7 @@
                                                     {meal.nutrition.calories} cal • {meal.nutrition.protein}g protein • {meal.nutrition.fiber}g fiber • {meal.nutrition.fat || 0}g fat
                                                 </div>
                                             </div>
-                                            <button className="remove-btn" onClick={() => setLoggedMeals(loggedMeals.filter(m => m.id !== meal.id))}>Delete</button>
+                                            <button className="remove-btn" onClick={() => deleteMealLog(meal.id)}>Delete</button>
                                         </div>
                                     ))}
                                 </div>
@@ -2660,6 +2889,7 @@
                             </div>
                         </div>
                     )}
+                    </React.Fragment>)}
                 </div>
             );
         }
